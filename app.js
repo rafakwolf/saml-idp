@@ -355,6 +355,12 @@ function _runServer(argv) {
     http.createServer(app);
   const blocks = {};
 
+
+  console.log('---------------------------------------------------');
+  console.log('process.env.ACS_URL', process.env.ACS_URL);
+  console.log('process.env.AUDIENCE', process.env.AUDIENCE);
+  console.log('---------------------------------------------------');
+
   console.log(dedent(chalk`
     Listener Port:
       {cyan ${argv.host}:${argv.port}}
@@ -381,9 +387,9 @@ function _runServer(argv) {
     Issuer URI:
       {cyan ${argv.serviceProviderId || UNDEFINED_VALUE}}
     Audience URI:
-      {cyan ${argv.audience || UNDEFINED_VALUE}}
+      {cyan ${argv.audience || process.env.AUDIENCE || UNDEFINED_VALUE}}
     ACS URL:
-      {cyan ${argv.acsUrl || UNDEFINED_VALUE}}
+      {cyan ${argv.acsUrl || process.env.ACS_URL || UNDEFINED_VALUE}}
     SLO URL:
       {cyan ${argv.sloUrl || UNDEFINED_VALUE}}
     Trust ACS URL in Request:
@@ -400,10 +406,10 @@ function _runServer(argv) {
     serviceProviderId:      argv.serviceProviderId || argv.audience,
     cert:                   argv.cert,
     key:                    argv.key,
-    audience:               argv.audience,
-    recipient:              argv.acsUrl,
-    destination:            argv.acsUrl,
-    acsUrl:                 argv.acsUrl,
+    audience:               argv.audience || process.env.AUDIENCE,
+    recipient:              argv.acsUrl || process.env.ACS_URL,
+    destination:            argv.acsUrl || process.env.ACS_URL,
+    acsUrl:                 argv.acsUrl || process.env.ACS_URL,
     sloUrl:                 argv.sloUrl,
     RelayState:             argv.relayState,
     allowRequestAcsUrl:     !argv.disableRequestAcsUrl,
@@ -431,7 +437,7 @@ function _runServer(argv) {
     getPostURL:             function (audience, authnRequestDom, req, callback) {
                               return callback(null, (req.authnRequest && req.authnRequest.acsUrl) ?
                                 req.authnRequest.acsUrl :
-                                argv.acsUrl);
+                                (argv.acsUrl || process.env.ACS_URL));
                             },
     transformAssertion:     function(assertionDom) {
                               if (argv.authnContextDecl) {
@@ -466,6 +472,10 @@ function _runServer(argv) {
                               });
                             }
   }
+
+
+ // console.log('IDP OPTIONS', JSON.stringify(idpOptions, undefined, 2));
+
 
   /**
    * App Environment

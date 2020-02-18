@@ -1,0 +1,14 @@
+{
+    "id": "ssotestserver",
+    "loadBalancer": {
+        "targetPort": 7000,
+        "cdn": false,
+        "defaultBackend": true
+    },
+    "kind": "Deployment",
+    "env": {
+        "HOST": "0.0.0.0",
+        "ACS_URL": "https://auth.liferay.sh/sso/saml2/0oa1dhfhvykvnIDzJ357",
+        "AUDIENCE": "https://www.okta.com/saml2/service-provider/spcgjhyrkzdkxepxlxix"
+    }
+}
